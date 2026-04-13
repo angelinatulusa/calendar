@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мой планировщик</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Шапка: название месяца и кнопки переключения -->
+    <div class="header">
+      <button id="prev">&#8592;</button>
+      <h2 id="month-label"></h2>
+      <button id="next">&#8594;</button>
+    </div>
+
+    <!-- Легенда: что означают цвета -->
+    <div class="legend">
+      <span class="tag shift">Смена</span>
+      <span class="tag plan">План</span>
+      <span class="tag task">Задача</span>
+    </div>
+
+    <!-- Сюда JS вставит сетку календаря -->
+    <div class="calendar" id="calendar"></div>
+
+  </div>
+
+  <!-- Модальное окно для добавления записей -->
+  <div class="modal-bg" id="modal-bg">
+    <div class="modal">
+      <h3 id="modal-title"></h3>
+
+      <!-- Список существующих записей на эту дату -->
+      <div id="modal-items"></div>
+
+      <!-- Форма добавления новой записи -->
+      <div class="add-form">
+        <select id="add-type">
+          <option value="shift">Смена</option>
+          <option value="plan">План</option>
+          <option value="task">Задача</option>
+        </select>
+        <input type="text" id="add-text" placeholder="Описание..." />
+        <input type="time" id="add-time" title="Время уведомления (необязательно)" />
+        <div class="form-buttons">
+          <button id="btn-cancel">Отмена</button>
+          <button id="btn-add">Добавить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

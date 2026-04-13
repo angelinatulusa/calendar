@@ -1,0 +1,213 @@
+/* Общий сброс отступов и шрифт */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+  }
+  
+  body {
+    background: #f5f5f5;
+    padding: 20px;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+  }
+  
+  /* Шапка с месяцем */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  
+  .header h2 {
+    font-size: 18px;
+    font-weight: 500;
+  }
+  
+  .header button {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .header button:hover {
+    background: #f0f0f0;
+  }
+  
+  /* Легенда цветов */
+  .legend {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  
+  /* Сетка календаря — 7 колонок по дням недели */
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  
+  /* Подписи дней недели */
+  .day-label {
+    text-align: center;
+    font-size: 12px;
+    color: #888;
+    padding: 4px 0;
+  }
+  
+  /* Ячейка дня */
+  .day-cell {
+    min-height: 75px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 5px;
+    cursor: pointer;
+    background: white;
+  }
+  
+  .day-cell:hover {
+    border-color: #aaa;
+  }
+  
+  /* Сегодняшний день выделен синей рамкой */
+  .day-cell.today {
+    border-color: #378ADD;
+    border-width: 2px;
+  }
+  
+  /* Дни из соседних месяцев — приглушённые */
+  .day-cell.other-month {
+    opacity: 0.35;
+  }
+  
+  .day-num {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 3px;
+  }
+  
+  /* Цветные теги для типов записей */
+  .tag {
+    display: block;
+    font-size: 10px;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .tag.shift { background: #dbeafe; color: #1e40af; }
+  .tag.plan  { background: #dcfce7; color: #166534; }
+  .tag.task  { background: #fef3c7; color: #92400e; }
+  
+  /* Затемнённый фон модального окна */
+  .modal-bg {
+    display: none; /* скрыто по умолчанию, JS меняет на flex */
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  /* Само модальное окно */
+  .modal {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    width: 320px;
+    max-width: 90vw;
+  }
+  
+  .modal h3 {
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+  
+  /* Одна запись в списке */
+  .item-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 13px;
+  }
+  
+  .item-row .tag {
+    flex-shrink: 0;
+    margin: 0;
+  }
+  
+  .item-row span {
+    flex: 1;
+  }
+  
+  /* Кнопка удаления записи */
+  .item-row button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #aaa;
+    font-size: 14px;
+  }
+  
+  .item-row button:hover { color: #e53e3e; }
+  
+  /* Форма добавления */
+  .add-form {
+    margin-top: 14px;
+    border-top: 1px solid #eee;
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .add-form select,
+  .add-form input {
+    padding: 7px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 13px;
+    width: 100%;
+  }
+  
+  .form-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .form-buttons button {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-size: 13px;
+    background: white;
+  }
+  
+  .form-buttons button:last-child {
+    border-color: #378ADD;
+    color: #185FA5;
+  }
+  
+  .form-buttons button:last-child:hover {
+    background: #dbeafe;
+  }

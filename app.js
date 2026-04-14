@@ -115,9 +115,16 @@ function makeCell(year, month, day, otherMonth) {
     const tag = document.createElement('span');
     tag.className = 'tag ' + item.type;
     const timeStr = item.timeStart
-        ? item.timeStart + (item.timeEnd ? '–' + item.timeEnd : '') + ' '
+        ? item.timeStart + (item.timeEnd ? '–' + item.timeEnd : '')
         : '';
-    tag.textContent = timeStr + item.text;
+    if (timeStr) {
+      const time = document.createElement('div');
+      time.textContent = timeStr;
+      tag.appendChild(time);
+    }
+    const name = document.createElement('div');
+    name.textContent = item.text;
+    tag.appendChild(name);
     cell.appendChild(tag);
   });
 

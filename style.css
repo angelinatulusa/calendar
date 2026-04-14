@@ -135,9 +135,8 @@ body {
   border-radius: 4px;
   padding: 1px 5px;
   margin-bottom: 2px;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .tag.shift { background: #1a3a5c; color: #7eb8f7; }
@@ -261,4 +260,49 @@ body {
 
 .form-buttons button:last-child:hover {
   background: #0f3460;
+}
+@media (max-width: 480px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 12px 8px;
+  }
+
+  .calendar {
+    gap: 2px;
+  }
+
+  /* Ячейки меньше на телефоне */
+  .day-cell {
+    min-height: 52px;
+    padding: 3px;
+  }
+
+  .day-num {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  /* Теги компактнее */
+  .tag {
+    font-size: 8px;
+    padding: 1px 3px;
+  }
+
+  /* Подписи дней недели */
+  .day-label {
+    font-size: 10px;
+  }
+
+  /* Шапка */
+  .header h2 {
+    font-size: 15px;
+  }
+
+  .header button {
+    padding: 4px 10px;
+    font-size: 14px;
+  }
 }

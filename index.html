@@ -17,6 +17,10 @@
       <button id="next">&#8594;</button>
     </div>
 
+    <div class="month-stats">
+      Всего смен: <span id="shift-count">0</span>
+    </div>
+
     <!-- Легенда: что означают цвета -->
     <div class="legend">
       <span class="tag shift">Смена</span>
@@ -45,7 +49,16 @@
           <option value="task">Задача</option>
         </select>
         <input type="text" id="add-text" placeholder="Описание..." />
-        <input type="time" id="add-time" title="Время уведомления (необязательно)" />
+        <div style="display:flex; gap:8px; align-items:center">
+          <div style="flex:1">
+            <label style="font-size:11px;color:#888">Начало</label>
+            <input type="time" id="add-time-start" />
+          </div>
+          <div style="flex:1" id="time-end-wrap">
+            <label style="font-size:11px;color:#888">Конец</label>
+            <input type="time" id="add-time-end" />
+          </div>
+        </div>
         <div class="form-buttons">
           <button id="btn-cancel">Отмена</button>
           <button id="btn-add">Добавить</button>

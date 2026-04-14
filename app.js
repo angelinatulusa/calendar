@@ -114,7 +114,10 @@ function makeCell(year, month, day, otherMonth) {
   items.slice(0, 3).forEach(item => {
     const tag = document.createElement('span');
     tag.className = 'tag ' + item.type;
-    tag.textContent = (item.time ? item.time + ' ' : '') + item.text;
+    const timeStr = item.timeStart
+        ? item.timeStart + (item.timeEnd ? '–' + item.timeEnd : '') + ' '
+        : '';
+    tag.textContent = timeStr + item.text;
     cell.appendChild(tag);
   });
 
@@ -135,7 +138,8 @@ function openModal(year, month, day) {
   selectedKey = dateKey(year, month, day);
   document.getElementById('modal-title').textContent = `${day} ${MONTHS[month]} ${year}`;
   document.getElementById('add-text').value = '';
-  document.getElementById('add-time').value = '';
+  document.getElementById('add-time-start').value = '';
+  document.getElementById('add-time-end').value = '';
   renderItems();
   document.getElementById('modal-bg').style.display = 'flex';
   document.getElementById('add-text').focus();
@@ -143,6 +147,10 @@ function openModal(year, month, day) {
 
 function closeModal() {
   document.getElementById('modal-bg').style.display = 'none';
+  // Сбрасываем режим редактирования
+  const btnAdd = document.getElementById('btn-add');
+  btnAdd.textContent = 'Добавить';
+  delete btnAdd.dataset.editIndex;
 }
 
 function renderItems() {
@@ -165,20 +173,44 @@ function renderItems() {
     tag.textContent = { shift: 'Смена', plan: 'План', task: 'Задача' }[item.type];
 
     const text = document.createElement('span');
-    text.textContent = (item.time ? item.time + ' — ' : '') + item.text;
+    const timeStr = item.timeStart
+        ? item.timeStart + (item.timeEnd ? ' – ' + item.timeEnd : '') + ' '
+        : '';
+        text.textContent = timeStr + item.text;
 
+        // Кнопка редактирования
+    const edit = document.createElement('button');
+    edit.textContent = '✎';
+    edit.addEventListener('click', () => {
+    // Подставляем данные записи в форму
+    document.getElementById('add-type').value = item.type;
+    document.getElementById('add-text').value = item.text;
+    document.getElementById('add-time-start').value = item.timeStart || '';
+    document.getElementById('add-time-end').value = item.timeEnd || '';
+
+    // Меняем кнопку "Добавить" на "Сохранить"
+    const btnAdd = document.getElementById('btn-add');
+    btnAdd.textContent = 'Сохранить';
+    btnAdd.dataset.editIndex = index; // запоминаем какую запись редактируем
+
+    document.getElementById('add-text').focus();
+    });
+
+    // Кнопка удаления
     const del = document.createElement('button');
     del.textContent = '✕';
     del.addEventListener('click', async () => {
-      data[selectedKey].splice(index, 1);
-      if (data[selectedKey].length === 0) delete data[selectedKey];
-      await saveDay(selectedKey);
-      renderItems();
-      renderCalendar();
+    data[selectedKey].splice(index, 1);
+    if (data[selectedKey].length === 0) delete data[selectedKey];
+    await saveDay(selectedKey);
+    renderItems();
+    renderCalendar();
+    updateShiftCount();
     });
 
     row.appendChild(tag);
     row.appendChild(text);
+    row.appendChild(edit);
     row.appendChild(del);
     container.appendChild(row);
   });
@@ -189,18 +221,47 @@ async function addItem() {
   if (!text) return;
 
   const type = document.getElementById('add-type').value;
-  const time = document.getElementById('add-time').value;
+  const timeStart = document.getElementById('add-time-start').value;
+  const timeEnd = document.getElementById('add-time-end').value;
+  const time = timeStart;
 
-  if (!data[selectedKey]) data[selectedKey] = [];
-  data[selectedKey].push({ type, text, time });
+  const btnAdd = document.getElementById('btn-add');
+  const editIndex = btnAdd.dataset.editIndex;
+
+  if (editIndex !== undefined) {
+    // Режим редактирования — заменяем старую запись
+    data[selectedKey][editIndex] = { type, text, timeStart, timeEnd };
+    delete btnAdd.dataset.editIndex;
+    btnAdd.textContent = 'Добавить';
+  } else {
+    // Режим добавления — добавляем новую запись
+    if (!data[selectedKey]) data[selectedKey] = [];
+    data[selectedKey].push({ type, text, timeStart, timeEnd });
+    scheduleNotification(selectedKey, text, time);
+  }
 
   await saveDay(selectedKey);
-  scheduleNotification(selectedKey, text, time);
 
   document.getElementById('add-text').value = '';
-  document.getElementById('add-time').value = '';
+  document.getElementById('add-time-start').value = '';
+  document.getElementById('add-time-end').value = '';
   renderItems();
   renderCalendar();
+  updateShiftCount();
+}
+
+// --- подсчет смен за месяц ---
+
+function updateShiftCount() {
+  const monthKey = `${curYear}-${String(curMonth + 1).padStart(2, '0')}`;
+  let count = 0;
+  Object.keys(data).forEach(k => {
+    if (k.startsWith(monthKey)) {
+      const items = data[k] || [];
+      count += items.filter(item => item.type === 'shift').length;
+    }
+  });
+  document.getElementById('shift-count').textContent = count;
 }
 
 // --- Уведомления ---
@@ -237,6 +298,7 @@ document.getElementById('prev').addEventListener('click', async () => {
   if (curMonth < 0) { curMonth = 11; curYear--; }
   await loadMonth(curYear, curMonth);
   renderCalendar();
+  updateShiftCount();
 });
 
 document.getElementById('next').addEventListener('click', async () => {
@@ -244,6 +306,7 @@ document.getElementById('next').addEventListener('click', async () => {
   if (curMonth > 11) { curMonth = 0; curYear++; }
   await loadMonth(curYear, curMonth);
   renderCalendar();
+  updateShiftCount();
 });
 
 document.getElementById('btn-cancel').addEventListener('click', closeModal);
@@ -261,6 +324,7 @@ document.getElementById('add-text').addEventListener('keydown', (e) => {
 async function init() {
   await loadMonth(curYear, curMonth);
   renderCalendar();
+  updateShiftCount();
 }
 
 init();

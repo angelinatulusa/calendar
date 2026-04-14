@@ -64,12 +64,12 @@ function renderCalendar() {
   const grid = document.getElementById('calendar');
   grid.innerHTML = '';
 
-  DAYS.forEach(d => {
+  DAYS.forEach((d, i) => {
     const label = document.createElement('div');
-    label.className = 'day-label';
+    label.className = 'day-label' + (i >= 5 ? ' weekend' : '');
     label.textContent = d;
     grid.appendChild(label);
-  });
+    });
 
   let startDow = new Date(curYear, curMonth, 1).getDay();
   startDow = startDow === 0 ? 6 : startDow - 1;
@@ -128,8 +128,11 @@ function makeCell(year, month, day, otherMonth) {
     cell.appendChild(more);
   }
 
-  cell.addEventListener('click', () => openModal(year, month, day));
-  return cell;
+  const dow = new Date(year, month, day).getDay();
+    if (dow === 0 || dow === 6) cell.classList.add('weekend');
+
+    cell.addEventListener('click', () => openModal(year, month, day));
+    return cell;
 }
 
 // --- Модальное окно ---
